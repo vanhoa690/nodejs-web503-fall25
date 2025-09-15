@@ -69,4 +69,4 @@ Node.js ra đời năm **2009** bởi **Ryan Dahl**, nhằm giải quyết bài 
 - **Networking và HTTP** (cơ bản)
 - **Cơ sở dữ liệu**
 
-[Xem chi tiết khóa học NodeJS tại đây](https://letrongdat.vercel.app/nodejs/)
+<a href="https://letrongdat.vercel.app/nodejs/" target="_blank">Xem chi tiết khóa học tại đây</a>
