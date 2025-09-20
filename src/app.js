@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 
 // app.use : su dung tien to router: /posts
 // postRouter: toan bo routing co trong postRouter
-app.use("/posts", postRouter);
+app.use("/api/posts", postRouter);
 
 app.listen(3000, () => {
   console.log(`Server is running on port http://localhost:3000`);
