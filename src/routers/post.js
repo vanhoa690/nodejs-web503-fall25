@@ -3,12 +3,13 @@ import { Router } from "express";
 const postRouter = Router();
 
 postRouter.get("/", (req, res) => {
-  res.send("Post");
+  console.log(req.query?.name);
+  res.send("Post" + req.query?.name);
 });
 
 // endpoint: api/posts/greet
-postRouter.get("/greet", (req, res) => {
-  res.send("Post greet");
+postRouter.get("/detail/:id", (req, res) => {
+  res.send("Post detail co id la: " + req.params?.id);
 });
 
 export default postRouter;
