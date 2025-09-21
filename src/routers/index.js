@@ -21,12 +21,12 @@ router.get("/", (req, res) => {
 });
 
 // gom api posts
-router.use("/posts", postRouter);
+router.use("/api/posts", postRouter);
 
 // gom api users
-router.use("/users", userRouter);
+router.use("/api/users", userRouter);
 
 // gom api products
-router.use("/products", productRouter);
+router.use("/api/products", productRouter);
 
 export default router;
