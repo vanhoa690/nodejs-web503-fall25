@@ -16,8 +16,10 @@ const router = Router();
 //   res.send("Hello, chao cac ban");
 // });
 
+//   localhost":3000/?name=Teo
 router.get("/", (req, res) => {
-  res.send("Hello, chao cac ban");
+  console.log(req.query?.name);
+  res.send("Hello, chao cac ban: " + req.query?.name);
 });
 
 // gom api posts
