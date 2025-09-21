@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Chào mừng các em đến với **khóa học Node.js/Express cơ bản!** 👨‍🏫",
   "main": "index.js",
- "scripts": {
-  "dev": "nodemon --exec babel-node src/app.js"
-},
+  "scripts": {
+    "dev": "nodemon --exec babel-node src/app.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vanhoa690/nodejs-web503-fall25.git"
@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/vanhoa690/nodejs-web503-fall25#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "morgan": "^1.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",
