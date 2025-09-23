@@ -4,14 +4,8 @@ import morgan from "morgan";
 
 const app = express();
 
-// Middleware log request
-// const logRequest = (req, res, next) => {
-//   console.log(`Log request ${req.method} ${req.url}`);
-//   next();
-// };
-
-// // Đặt middleware này trước các route
-// app.use(logRequest);
+// Middleware tích hợp để parse JSON
+app.use(express.json());
 
 app.use(morgan("dev"));
 
