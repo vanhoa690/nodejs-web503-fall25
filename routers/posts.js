@@ -8,18 +8,32 @@ let posts = [
 
 // GET /api/posts - Lấy danh sách bài viết
 postRouter.get("/", (req, res) => {
+  const { search } = req.query;
+  if (search) {
+    const filteredPosts = posts.filter((post) =>
+      post.title.toLowerCase().includes(search.toLowerCase())
+    );
+    if (filteredPosts.length === 0) {
+      return res.status(404).json({ error: "No posts found" });
+    }
+    return res.json(filteredPosts);
+  }
+  if (posts.length === 0) {
+    return res.status(404).json({ error: "No posts available" });
+  }
+
   res.json(posts);
 });
 
-// GET /api/posts/detail/:id - Lấy chi tiết bài viết
-postRouter.get("/detail/:id", (req, res) => {
+// GET /api/posts/:id - Lấy chi tiết bài viết
+postRouter.get("/:id", (req, res) => {
   const post = posts.find((p) => p.id === parseInt(req.params.id));
   if (!post) return res.status(404).json({ error: "Post not found" });
   res.json(post);
 });
 
 // POST /api/posts - Thêm bài viết mới
-postRouter.post("/add", (req, res) => {
+postRouter.post("/", (req, res) => {
   const { title, content } = req.body;
   const newPost = { id: Date.now(), title, content };
   posts.push(newPost);
@@ -27,7 +41,7 @@ postRouter.post("/add", (req, res) => {
 });
 
 // PUT /api/posts/:id - Cập nhật bài viết
-postRouter.put("/update/:id", (req, res) => {
+postRouter.put("/:id", (req, res) => {
   const post = posts.find((p) => p.id === parseInt(req.params.id));
   if (!post) return res.status(404).json({ error: "Post not found" });
 
