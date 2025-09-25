@@ -1,4 +1,7 @@
 import { Router } from "express";
+
+import { getPosts } from "../controllers/post";
+
 const postRouter = Router();
 
 let posts = [
@@ -9,9 +12,7 @@ let posts = [
 ];
 
 // GET /api/posts - Lấy danh sách bài viết
-postRouter.get("/", (req, res) => {
-  res.json(posts);
-});
+postRouter.get("/", getPosts);
 
 // GET /api/posts/:id - Lấy chi tiết bài viết
 postRouter.get("/:id", (req, res) => {
@@ -22,6 +23,7 @@ postRouter.get("/:id", (req, res) => {
 
 // POST /api/posts - Thêm bài viết mới
 postRouter.post("/", (req, res) => {
+  // req.body : underfined
   const { title, content } = req.body;
   const newPost = { id: Date.now(), title, content };
   posts.push(newPost);
