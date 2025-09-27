@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getPosts } from "../controllers/post";
+import { addPost, getPostById, getPosts } from "../controllers/post";
 
 const postRouter = Router();
 
@@ -15,20 +15,10 @@ let posts = [
 postRouter.get("/", getPosts);
 
 // GET /api/posts/:id - Lấy chi tiết bài viết
-postRouter.get("/:id", (req, res) => {
-  const post = posts.find((p) => p.id === parseInt(req.params.id));
-  if (!post) return res.status(404).json({ error: "Post not found" });
-  res.json(post);
-});
+postRouter.get("/:id", getPostById);
 
 // POST /api/posts - Thêm bài viết mới
-postRouter.post("/", (req, res) => {
-  // req.body : underfined
-  const { title, content } = req.body;
-  const newPost = { id: Date.now(), title, content };
-  posts.push(newPost);
-  res.status(201).json(newPost);
-});
+postRouter.post("/", addPost);
 
 // DELETE /api/posts/:id - Xóa bài viết
 postRouter.delete("/:id", (req, res) => {
