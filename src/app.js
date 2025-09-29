@@ -1,6 +1,7 @@
 import express from "express";
-import postRouter from "../routers/posts";
 import morgan from "morgan";
+import mongoose from "mongoose";
+import postRouter from "./routers/posts";
 
 const app = express();
 
@@ -8,6 +9,11 @@ const app = express();
 app.use(express.json());
 
 app.use(morgan("dev"));
+
+mongoose
+  .connect(`mongodb://127.0.0.1:27017/test_web503_nodejs`)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Could not connect to MongoDB:", err));
 
 app.get("/", (req, res) => {
   res.json({ message: "Homepage" });
