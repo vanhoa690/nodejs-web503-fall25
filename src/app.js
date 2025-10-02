@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import postRouter from "./routers/posts";
+import productRouter from "./routers/products";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/posts", postRouter);
+app.use("/products", productRouter);
 
 app.listen(3000, () => {
   console.log(`Server is running on port http://localhost:3000`);
