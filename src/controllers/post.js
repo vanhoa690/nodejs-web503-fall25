@@ -10,12 +10,19 @@ export async function getPosts(req, res) {
   }
 }
 
-export function getPostById(req, res) {
+export async function getPostById(req, res) {
   // Post.findById()
-  // const post = posts.find((p) => p.id === parseInt(req.params.id));
-  // if (!post) return res.status(404).json({ error: "Post not found" });
-  // res.json(post);
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: "Ko tim thay" });
+    }
+    return res.json(post);
+  } catch (error) {
+    return res.json({ error: error.message });
+  }
 }
+
 export async function addPost(req, res) {
   try {
     // Model.create(data) : data = req.body, Model = Post
@@ -26,9 +33,29 @@ export async function addPost(req, res) {
   }
 }
 
-export function updatePost(req, res) {
+export async function updatePost(req, res) {
   // Post.findByIdAndUpdate()
+  try {
+    const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!post) {
+      return res.status(404).json({ error: "Ko tim thay" });
+    }
+    return res.json(post);
+  } catch (error) {
+    return res.json({ error: error.message });
+  }
 }
-export function deletePost(req, res) {
+export async function deletePost(req, res) {
   // Post.findByIdAndDelete()
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: "Ko tim thay" });
+    }
+    return res.json({ success: true });
+  } catch (error) {
+    return res.json({ error: error.message });
+  }
 }
