@@ -6,7 +6,14 @@ const productRouter = Router();
 // GET /api/products - Lấy danh sách sản phẩm
 productRouter.get("/", async (req, res) => {
   try {
-    const products = await Product.find();
+    const { page = 1, limit = 10 } = req.query;
+
+    const options = {
+      page: parseInt(page),
+      limit: parseInt(limit),
+    };
+    const products = await Product.paginate({}, options);
+
     return res.json(products);
   } catch (err) {
     return res.status(500).json({ error: "Lỗi server", message: err.message });
