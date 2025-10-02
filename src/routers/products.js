@@ -6,14 +6,31 @@ const productRouter = Router();
 // GET /api/products - Lấy danh sách sản phẩm
 productRouter.get("/", async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
+    const { _page = 1, _limit = 10, name, minPrice, maxPrice } = req.query;
 
+    // tạo điều kiện lọc
+    const filter = {};
+
+    // tìm kiếm theo tên (không phân biệt hoa thường)
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
+    }
+
+    // lọc theo khoảng giá
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = parseFloat(minPrice);
+      if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+    }
+    console.log(filter);
+
+    // options phân trang
     const options = {
-      page: parseInt(page),
-      limit: parseInt(limit),
+      page: parseInt(_page),
+      limit: parseInt(_limit),
+      sort: { createdAt: -1 }, // sắp xếp mới nhất trước
     };
-    const products = await Product.paginate({}, options);
-
+    const products = await Product.paginate(filter, options);
     return res.json(products);
   } catch (err) {
     return res.status(500).json({ error: "Lỗi server", message: err.message });
