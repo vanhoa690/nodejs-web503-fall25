@@ -1,7 +1,8 @@
 import express from "express";
-import Joi, { required } from "joi";
-
+// import Joi from "joi";
 import mongoose from "mongoose";
+import postRouter from "./routers/post";
+import authorRouter from "./routers/author";
 
 const app = express();
 
@@ -13,92 +14,95 @@ mongoose
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
 // Model Author
+app.use("/api/posts", postRouter);
 
-const authorSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      minlength: 2,
-      maxlength: 100,
-    },
-    bio: String,
-  },
-  {
-    timestamps: true,
-  }
-);
+app.use("/api/authors", authorRouter);
 
-const Author = mongoose.model("Author", authorSchema);
+// const authorSchema = new mongoose.Schema(
+//   {
+//     name: {
+//       type: String,
+//       required: true,
+//       minlength: 2,
+//       maxlength: 100,
+//     },
+//     bio: String,
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
 
-// ---------Validate JOI ------
-const createSchema = Joi.object({
-  name: Joi.string().required().min(2).max(100),
-  bio: Joi.string().optional().max(500),
-});
+// const Author = mongoose.model("Author", authorSchema);
 
-//---------- CRUD Author ------
-// GET api/authors
-app.get("/api/authors", async (req, res) => {
-  try {
-    const authors = await Author.find();
-    res.json(authors);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-});
+// // ---------Validate JOI ------
+// const createSchema = Joi.object({
+//   name: Joi.string().required().min(2).max(100),
+//   bio: Joi.string().optional().max(500),
+// });
 
-// GET api/authors/:id
-app.get("/api/authors/:id", async (req, res) => {
-  try {
-    const author = await Author.findById(req.params.id);
-    res.json(author);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-});
+// //---------- CRUD Author ------
+// // GET api/authors
+// app.get("/api/authors", async (req, res) => {
+//   try {
+//     const authors = await Author.find();
+//     res.json(authors);
+//   } catch (error) {
+//     res.json({ error: error.message });
+//   }
+// });
 
-// POST api/authors
-app.post("/api/authors", async (req, res) => {
-  try {
-    const { error } = createSchema.validate(req.body, { abortEarly: false });
-    if (error) {
-      return res.json({ errors: error.details.map((err) => err.message) });
-    }
-    const newAuthor = await Author.create(req.body);
-    res.json(newAuthor);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-});
+// // GET api/authors/:id
+// app.get("/api/authors/:id", async (req, res) => {
+//   try {
+//     const author = await Author.findById(req.params.id);
+//     res.json(author);
+//   } catch (error) {
+//     res.json({ error: error.message });
+//   }
+// });
 
-// PUT api/authors/:id
-app.put("/api/authors/:id", async (req, res) => {
-  try {
-    const updateAuthor = await Author.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-      }
-    );
+// // POST api/authors
+// app.post("/api/authors", async (req, res) => {
+//   try {
+//     const { error } = createSchema.validate(req.body, { abortEarly: false });
+//     if (error) {
+//       return res.json({ errors: error.details.map((err) => err.message) });
+//     }
+//     const newAuthor = await Author.create(req.body);
+//     res.json(newAuthor);
+//   } catch (error) {
+//     res.json({ error: error.message });
+//   }
+// });
 
-    res.json(updateAuthor);
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-});
+// // PUT api/authors/:id
+// app.put("/api/authors/:id", async (req, res) => {
+//   try {
+//     const updateAuthor = await Author.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       {
+//         new: true,
+//       }
+//     );
 
-// DELETE // api/authors/:id
-app.delete("/api/authors/:id", async (req, res) => {
-  try {
-    await Author.findByIdAndDelete(req.params.id);
+//     res.json(updateAuthor);
+//   } catch (error) {
+//     res.json({ error: error.message });
+//   }
+// });
 
-    res.json({ success: true });
-  } catch (error) {
-    res.json({ error: error.message });
-  }
-});
+// // DELETE // api/authors/:id
+// app.delete("/api/authors/:id", async (req, res) => {
+//   try {
+//     await Author.findByIdAndDelete(req.params.id);
+
+//     res.json({ success: true });
+//   } catch (error) {
+//     res.json({ error: error.message });
+//   }
+// });
 
 // -----------------------------
 

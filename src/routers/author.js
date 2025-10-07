@@ -10,18 +10,18 @@ import {
 const authorRouter = Router();
 
 // GET api/authors
-authorRouter.get("/api/authors", getAuthors);
+authorRouter.get("/", getAuthors);
 
 // GET api/authors/:id
-authorRouter.get("/api/authors/:id", getAuthorById);
+authorRouter.get("/:id", getAuthorById);
 
 // POST api/authors
-authorRouter.post("/api/authors", addAuthor);
+authorRouter.post("/", addAuthor);
 
 // PUT api/authors/:id
-authorRouter.put("/api/authors/:id", updateAuthor);
+authorRouter.put("/:id", updateAuthor);
 
 // DELETE // api/authors/:id
-authorRouter.delete("/api/authors/:id", deleteAuthor);
+authorRouter.delete("/:id", deleteAuthor);
 
 export default authorRouter;
