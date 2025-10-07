@@ -20,7 +20,7 @@ postRouter.get("/", async (req, res) => {
 // GET /api/posts/:id - Lấy chi tiết bài viết
 postRouter.get("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("author", "name");
     if (!post)
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
     return res.json(post);

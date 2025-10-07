@@ -4,8 +4,14 @@ import Joi from "joi";
 
 const authorRouter = Router();
 
-const schema = Joi.object({
-  name: Joi.string().required().max(100), // Trường "name" phải là chuỗi, bắt buộc và tối đa 100 ký tự
+const creatSschema = Joi.object({
+  name: Joi.string().required().min(2).max(100),
+  bio: Joi.string().optional().max(500),
+});
+
+const updateSschema = Joi.object({
+  name: Joi.string().optional().min(2).max(100).disallow(""),
+  bio: Joi.string().optional().max(500),
 });
 
 // GET /api/authors - Lấy danh sách tác giả
@@ -49,9 +55,8 @@ authorRouter.get("/:id", async (req, res) => {
 // AUTHOR /api/authors - Thêm tác giả mới
 authorRouter.post("/", async (req, res) => {
   try {
-    const { error } = schema.validate(req.body);
+    const { error } = creatSschema.validate(req.body);
     if (error) {
-      console.log("Dữ liệu không hợp lệ:", error.details);
       return res.status(400).json({
         error: "Lỗi khi thêm tác giả",
         details: error.details.map((err) => err.message),
@@ -69,6 +74,13 @@ authorRouter.post("/", async (req, res) => {
 // PUT /api/authors/:id - Cập nhật tác giả
 authorRouter.put("/:id", async (req, res) => {
   try {
+    const { error } = updateSschema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        error: "Lỗi khi sửa tác giả",
+        details: error.details.map((err) => err.message),
+      });
+    }
     const author = await Author.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });

@@ -1,28 +1,29 @@
 import express from "express";
 import morgan from "morgan";
-import mongoose from "mongoose";
+
 import postRouter from "./routers/posts";
-import productRouter from "./routers/products";
+import mongoose from "mongoose";
 import authorRouter from "./routers/authors";
 
 const app = express();
 
-// Middleware tích hợp để parse JSON
-app.use(express.json());
-
+// Dùng morgan để log ở chế độ 'dev'
 app.use(morgan("dev"));
 
+// Middleware tích hợp để parse JSON: req.body
+app.use(express.json());
+
 mongoose
-  .connect(`mongodb://127.0.0.1:27017/test_web503_nodejs`)
+  .connect("mongodb://localhost:27017/nodejs")
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
+// localhost":3000
 app.get("/", (req, res) => {
-  res.json({ message: "Homepage" });
+  res.send("Hello, chao cac ban: ");
 });
 
-app.use("/posts", postRouter);
-app.use("/api/products", productRouter);
+app.use("/api/posts", postRouter);
 app.use("/api/authors", authorRouter);
 
 app.listen(3000, () => {
