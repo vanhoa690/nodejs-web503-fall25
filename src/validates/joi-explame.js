@@ -7,7 +7,7 @@ const schema = Joi.object({
   }),
 });
 
-const data = { name: 11, age: -1 };
+const data = { name: 11, age: -1, abc: "dd" };
 
 const { error, value } = schema.validate(data, { abortEarly: false }); //value: data, error: thong bao loi: ko loi -> undefined, error.details
 
