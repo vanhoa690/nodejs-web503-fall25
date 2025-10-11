@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import postRouter from "./routers/post";
 import authorRouter from "./routers/author";
+import bcrypt from "bcryptjs";
 
 const app = express();
 
@@ -13,97 +14,39 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
-// Model Author
 app.use("/api/posts", postRouter);
 
 app.use("/api/authors", authorRouter);
 
-// const authorSchema = new mongoose.Schema(
-//   {
-//     name: {
-//       type: String,
-//       required: true,
-//       minlength: 2,
-//       maxlength: 100,
-//     },
-//     bio: String,
-//   },
-//   {
-//     timestamps: true,
-//   }
-// );
+//------------------------------
+// Register User
+//1 Model User
+const userSchema = mongoose.Schema(
+  {
+    username: String,
+    password: String,
+    email: String,
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+  }
+);
 
-// const Author = mongoose.model("Author", authorSchema);
+const User = mongoose.model("User", userSchema);
 
-// // ---------Validate JOI ------
-// const createSchema = Joi.object({
-//   name: Joi.string().required().min(2).max(100),
-//   bio: Joi.string().optional().max(500),
-// });
+// 2. Route: api/auth/register
+app.post("/api/auth/register", async (req, res) => {
+  const userExisted = await User.findOne({ email: req.body.email });
 
-// //---------- CRUD Author ------
-// // GET api/authors
-// app.get("/api/authors", async (req, res) => {
-//   try {
-//     const authors = await Author.find();
-//     res.json(authors);
-//   } catch (error) {
-//     res.json({ error: error.message });
-//   }
-// });
+  if (userExisted) {
+    return res.json("Error: user da ton tai");
+  }
+  req.body.password = await bcrypt.hash(req.body.password, 10);
 
-// // GET api/authors/:id
-// app.get("/api/authors/:id", async (req, res) => {
-//   try {
-//     const author = await Author.findById(req.params.id);
-//     res.json(author);
-//   } catch (error) {
-//     res.json({ error: error.message });
-//   }
-// });
-
-// // POST api/authors
-// app.post("/api/authors", async (req, res) => {
-//   try {
-//     const { error } = createSchema.validate(req.body, { abortEarly: false });
-//     if (error) {
-//       return res.json({ errors: error.details.map((err) => err.message) });
-//     }
-//     const newAuthor = await Author.create(req.body);
-//     res.json(newAuthor);
-//   } catch (error) {
-//     res.json({ error: error.message });
-//   }
-// });
-
-// // PUT api/authors/:id
-// app.put("/api/authors/:id", async (req, res) => {
-//   try {
-//     const updateAuthor = await Author.findByIdAndUpdate(
-//       req.params.id,
-//       req.body,
-//       {
-//         new: true,
-//       }
-//     );
-
-//     res.json(updateAuthor);
-//   } catch (error) {
-//     res.json({ error: error.message });
-//   }
-// });
-
-// // DELETE // api/authors/:id
-// app.delete("/api/authors/:id", async (req, res) => {
-//   try {
-//     await Author.findByIdAndDelete(req.params.id);
-
-//     res.json({ success: true });
-//   } catch (error) {
-//     res.json({ error: error.message });
-//   }
-// });
-
+  const newUser = await User.create(req.body);
+  res.json(newUser);
+});
 // -----------------------------
 
 app.listen(3000, () => {

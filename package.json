@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/vanhoa690/nodejs-web503-fall25#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "express": "^5.1.0",
     "joi": "^18.0.1",
     "mongoose": "^8.18.2",
