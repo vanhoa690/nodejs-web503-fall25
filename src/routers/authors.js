@@ -1,8 +1,10 @@
 import { Router } from "express";
 import Author from "../models/author.model";
 import Joi from "joi";
+import { checkAuth, restrictTo } from "../middlewares/checkAuth";
 
 const authorRouter = Router();
+// authorRouter.use(checkAuth);
 
 const creatSschema = Joi.object({
   name: Joi.string().required().min(2).max(100),
@@ -41,7 +43,7 @@ authorRouter.get("/", async (req, res) => {
 });
 
 // GET /api/authors/:id - Lấy chi tiết tác giả
-authorRouter.get("/:id", async (req, res) => {
+authorRouter.get("/:id", checkAuth, async (req, res) => {
   try {
     const author = await Author.findById(req.params.id);
     if (!author)
@@ -51,25 +53,30 @@ authorRouter.get("/:id", async (req, res) => {
     return res.status(500).json({ error: "Lỗi server", message: err.message });
   }
 });
-
+// authorRouter.use(restrictTo("admin", "staff"));
 // AUTHOR /api/authors - Thêm tác giả mới
-authorRouter.post("/", async (req, res) => {
-  try {
-    const { error } = creatSschema.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        error: "Lỗi khi thêm tác giả",
-        details: error.details.map((err) => err.message),
-      });
+authorRouter.post(
+  "/",
+  checkAuth,
+  restrictTo("admin", "staff"),
+  async (req, res) => {
+    try {
+      const { error } = creatSschema.validate(req.body);
+      if (error) {
+        return res.status(400).json({
+          error: "Lỗi khi thêm tác giả",
+          details: error.details.map((err) => err.message),
+        });
+      }
+      const newAuthor = await Author.create(req.body);
+      return res.status(201).json(newAuthor);
+    } catch (err) {
+      return res
+        .status(400)
+        .json({ error: "Lỗi khi thêm tác giả", message: err.message });
     }
-    const newAuthor = await Author.create(req.body);
-    return res.status(201).json(newAuthor);
-  } catch (err) {
-    return res
-      .status(400)
-      .json({ error: "Lỗi khi thêm tác giả", message: err.message });
   }
-});
+);
 
 // PUT /api/authors/:id - Cập nhật tác giả
 authorRouter.put("/:id", async (req, res) => {

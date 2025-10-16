@@ -1,12 +1,9 @@
 import { Router } from "express";
 import Post from "../models/post.model";
+import { checkAuth } from "../middlewares/checkAuth";
 const postRouter = Router();
 
-let posts = [
-  { id: 1, title: "Bài viết 1", content: "Nội dung bài viết 1" },
-  { id: 2, title: "Bài viết 2", content: "Nội dung bài viết 2" },
-];
-
+postRouter.use(checkAuth);
 // GET /api/posts - Lấy danh sách bài viết
 postRouter.get("/", async (req, res) => {
   try {

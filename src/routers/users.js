@@ -32,8 +32,8 @@ userRouter.post("/register", async (req, res) => {
     req.body.password = hashPassword;
     const newUser = await User.create(req.body);
     newUser.password = undefined;
-    const token = jwt.sign({ id: newUser._id }, "123456", {
-      expiresIn: "5m",
+    const token = jwt.sign({ id: newUser._id }, "khoa", {
+      expiresIn: "5h",
     });
 
     return res.status(201).json({
