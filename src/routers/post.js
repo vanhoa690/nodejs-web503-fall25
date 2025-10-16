@@ -7,8 +7,11 @@ import {
   getPosts,
   updatePost,
 } from "../controllers/post";
+import { checkAuth } from "../middlewares/checkAuth";
 
 const postRouter = Router();
+
+postRouter.use(checkAuth);
 
 // GET /api/posts - Lấy danh sách bài viết
 postRouter.get("/", getPosts);
