@@ -34,3 +34,9 @@ export const loginUser = async (req, res) => {
   user.password = undefined;
   res.json({ user, token });
 };
+
+export const getProfileUser = (req, res) => {
+  console.log(req.userId);
+
+  res.json({ userId: req.userId });
+};
