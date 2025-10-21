@@ -102,6 +102,45 @@ app.post("/auth/login", async function (req, res) {
   const token = jwt.sign({ id: user._id }, "khoa", { expiresIn: "1h" });
   res.json({ message: "Login success", token });
 });
+
+const uploadSchema = new mongoose.Schema(
+  {
+    image: String,
+  },
+  { timestamps: true, versionKey: false }
+);
+
+const Upload = mongoose.model("Upload", uploadSchema);
+import multer from "multer";
+import path from "path";
+
+const storage = multer.diskStorage({
+  // khai báo nơi lưu trữ file
+  destination: (req, file, callback) => {
+    callback(null, "src/uploads");
+  },
+  // xử lý đổi tên file
+  filename: (req, file, callback) => {
+    const filename = Date.now() + path.extname(file.originalname);
+    req.body.image = filename;
+    callback(null, filename);
+  },
+});
+const upload = multer({ storage });
+app.post("/api/upload", upload.single("image"), async function (req, res) {
+  try {
+    const upload = await Upload.create({ image: req.body.image });
+
+    upload.image = `http://localhost:3000/${upload.image}`;
+
+    return res.status(201).json({
+      message: "Upload thành công",
+      data: upload,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
 app.listen(3000, () => {
   console.log(`Server is running on port http://localhost:3000`);
 });
