@@ -56,7 +56,7 @@ app.delete("/courses/:id", async function (req, res) {
 const userSchema = new mongoose.Schema(
   {
     email: String,
-    password: Number,
+    password: String,
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -91,12 +91,12 @@ app.post("/auth/login", async function (req, res) {
   // check email user
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return res.json("Khong xac thuc duoc");
+    return res.json("Khong xac thuc duoc1");
   }
   // so sanh password
-  const isMatch = await bcrypt.compare(user.password, req.body.password);
+  const isMatch = await bcrypt.compare(req.body.password, user.password);
   if (!isMatch) {
-    return res.json("Khong xac thuc duoc");
+    return res.json("Khong xac thuc duoc2");
   }
   // gen token
   const token = jwt.sign({ id: user._id }, "khoa", { expiresIn: "1h" });
