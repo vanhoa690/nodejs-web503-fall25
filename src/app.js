@@ -4,6 +4,7 @@ import postRouter from "./routers/post";
 import authorRouter from "./routers/author";
 
 import authRouter from "./routers/auth";
+import paymentRouter from "./routers/payment";
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.use("/api/posts", postRouter);
 app.use("/api/authors", authorRouter);
 
 app.use("/api/auth", authRouter);
-
+app.use("/api/payment", paymentRouter);
 app.listen(3000, () => {
   console.log(`Server is running on port http://localhost:3000`);
 });
