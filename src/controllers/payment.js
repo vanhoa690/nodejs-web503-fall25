@@ -50,11 +50,7 @@ export const paymentVnpay = (req, res) => {
       });
     }
 
-    const ipAddr =
-      req.headers["x-forwarded-for"] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress ||
-      (req.connection.socket ? req.connection.socket.remoteAddress : null);
+    const ipAddr = req.ip;
 
     const orderId = moment().format("YYYYMMDDHHmmss");
     const createDate = moment().format("YYYYMMDDHHmmss");
@@ -80,22 +76,27 @@ export const paymentVnpay = (req, res) => {
     }
 
     // Sort parameters and create secure hash
-    const sortedParams = sortObject(vnp_Params);
-    const signData = qs.stringify(sortedParams, { encode: false });
-    const hmac = crypto.createHmac("sha512", config.vnp_HashSecret);
-    const secureHash = hmac
-      .update(Buffer.from(signData, "utf-8"))
-      .digest("hex");
+    // const sortedParams = sortObject(vnp_Params);
+    // const signData = qs.stringify(sortedParams, { encode: false });
+    // const hmac = crypto.createHmac("sha512", config.vnp_HashSecret);
+    // const secureHash = hmac
+    //   .update(Buffer.from(signData, "utf-8"))
+    //   .digest("hex");
 
-    // Add secure hash to parameters
-    const finalParams = {
-      ...sortedParams,
-      vnp_SecureHash: secureHash,
-    };
+    // // Add secure hash to parameters
+    // const finalParams = {
+    //   ...sortedParams,
+    //   vnp_SecureHash: secureHash,
+    // };
 
-    // Create payment URL
-    const paymentUrl = `${config.vnp_Url}?${qs.stringify(finalParams)}`;
+    // // Create payment URL
+    // const paymentUrl = `${config.vnp_Url}?${qs.stringify(finalParams)}`;
+    let signData = qs.stringify(vnp_Params);
+    let hmac = crypto.createHmac("sha512", config.vnp_HashSecret);
+    let signed = hmac.update(new Buffer.from(signData, "utf-8")).digest("hex");
+    vnp_Params["vnp_SecureHash"] = signed;
 
+    let paymentUrl = config.vnp_Url + "?" + qs.stringify(vnp_Params);
     res.json({
       success: true,
       paymentUrl,
